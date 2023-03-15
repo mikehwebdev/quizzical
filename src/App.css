@@ -1,6 +1,5 @@
 /*To keep my commentary succint I'll only comment on code that's notable or whose purpose is not immediately obvious. */
 
-
 /* The below universal selector ensures all margins set to zero and all widths and heights calculate to what I specify further below in the stylesheet to adhere to the spec document. Box-sizing:border box ensures this regardless of the padding and borders I use on the various elements*/
 
 * {
@@ -143,7 +142,7 @@ button {
     margin-left: 20px;
 }
 
-/*Answer-button is the main button rendered in-question. Selected, correct, incorrect and faded classes are all applied conditionally depending on the game state*/
+/*Answer-button is the main button rendered in-question. Selected, correct, incorrect and faded are all rendered conditionally depending on the game state*/
 
 .answer-button {
     background-color: transparent;
