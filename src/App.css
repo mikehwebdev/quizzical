@@ -1,0 +1,184 @@
+/*To keep my commentary succint I'll only comment on code that's notable or whose purpose is not immediately obvious. */
+
+
+/* The below universal selector ensures all margins set to zero and all widths and heights calculate to what I specify further below in the stylesheet to adhere to the spec document. Box-sizing:border box ensures this regardless of the padding and borders I use on the various elements*/
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* The below class ensures the app appears in the center of the screen but with the capacity to grow with any questions added*/
+
+.app {
+    margin: 50px 0;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+
+/*Typography */
+
+/*While some values are shared here there's usually not shared values between different headers. If I group selectors for example font weight for example I'll actually create more code overall. I'll stick to just grouping h1-h4 for the text color */
+
+h1, h2, h3, h4 {
+    color: #293264;
+}
+
+h1 {
+    font-size: 31.25px;
+    font-weight: 700;
+    font-family: 'Karla', sans-serif;
+    margin: 218px 0 7px 0;
+}
+
+h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 29px;
+}
+
+h3 {
+    font-family: 'Karla', sans-serif;
+    font-size: 16px;
+    margin:15px 0 12px 0;
+    max-width: 361px;
+}
+
+h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 12.8px;
+    margin-left: 25px;
+}
+
+/* Images */
+
+/*These sit in the tops and bottom corners for decoration. The classes stay the same but the images are rendered conditionally. See App.jsx*/
+
+.blob-yellow {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.blob-purple {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+/* Navigation */
+
+.start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* The below class has a position of relative to ensure the "blob" images stick to their corners as they are absolutely positioned elements. The min-height is set to 550px as that value is taken from the design doc but will grow if any more questions are added in the future*/
+
+.container {
+    position: relative;
+    min-height: 550px;
+    width: 550px;
+    background-color: #F5F7FB;
+    display: flex;
+    flex-direction: column;
+}
+
+.questions {
+    width: 399px;
+    margin: 24px 0 0 78px;
+}
+
+.question {
+    border-bottom: 0.79px solid #DBDEF0;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+}
+
+/* I've applied align-items: baseline to the summary elements here as the text on the dialogue and the button needs to be lined up but this way saves declaring an extra margin just for this single text element*/
+
+.summary {
+    margin-top: 20px;
+    display: flex;
+    align-items: baseline;
+}
+
+/*Buttons*/
+
+.answer-button, .check-answers, .play-again {
+    font-family: 'Inter', sans-serif;
+}
+
+button {
+    background-color: #4D5B9E;
+    color: #F5F7FB;
+    border: none;
+    width: 193px;
+    height: 52px;
+    border-radius: 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.check-answers {
+    width: 120px;
+    height: 35px;
+    font-size: 10.24px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.play-again {
+    width: 104px;
+    height: 30px;
+    font-size: 10.24px;
+    border-radius: 10px;
+    margin-left: 20px;
+}
+
+/*Answer-button is the main button rendered in-question. Selected, correct, incorrect and faded classes are all applied conditionally depending on the game state*/
+
+.answer-button {
+    background-color: transparent;
+    color: #293264;
+    border: 0.79px solid #4D5B9E;
+    min-width: 65.92px;
+    max-width: fit-content;
+    height: fit-content;
+    border-radius: 7.9px;
+    font-size: 10.24px;
+    font-weight: 500;
+    padding: 0.15rem 0.4rem;
+    margin: 0 13px 14px 0;
+}
+
+.selected {
+    border: transparent;
+    color: #293264;
+    background-color: #D6DBF5;
+    border: 0.79px solid #D6DBF5;
+}
+
+.correct {
+    background-color: #94D7A2;
+}
+
+.incorrect {
+    background-color: #F8BCBC;
+}
+
+.faded {
+    opacity: 0.5;
+}
+
+
+
+
+
