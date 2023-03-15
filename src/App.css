@@ -10,9 +10,10 @@
 /* The below class ensures the app appears in the center of the screen but with the capacity to grow with any questions added*/
 
 .app {
-    margin: 50px 0;
-    display: grid;
-    place-items: center;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 
