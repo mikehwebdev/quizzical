@@ -7,7 +7,7 @@
     box-sizing: border-box;
 }
 
-/* The below class ensures the app appears in the center of the screen but with the capacity to grow with any questions added*/
+/* The below class ensures the app appears in the center of the viewport but with the capacity to grow with any amount of questions rendered*/
 
 .app {
     
@@ -44,6 +44,7 @@ h3 {
     font-size: 16px;
     margin:15px 0 12px 0;
     max-width: 361px;
+    font-weight: 700;
 }
 
 h4 {
@@ -105,7 +106,7 @@ h4 {
 /* I've applied align-items: baseline to the summary elements here as the text on the dialogue and the button needs to be lined up but this way saves declaring an extra margin just for this single text element*/
 
 .summary {
-    margin-top: 20px;
+    margin: 20px 0;
     display: flex;
     align-items: baseline;
 }
@@ -143,7 +144,7 @@ button {
     margin-left: 20px;
 }
 
-/*Answer-button is the main button rendered in-question. Selected, correct, incorrect and faded are all rendered conditionally depending on the game state*/
+/*Answer-button is the main button rendered in-question. Selected, correct, incorrect and faded are all styled conditionally depending on the game state*/
 
 .answer-button {
     background-color: transparent;
@@ -177,7 +178,10 @@ button {
 .faded {
     opacity: 0.5;
 }
-
+/* The below class is only for True/False questions*/
+.no-answer {
+    display: none;
+}
 
 
 

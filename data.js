@@ -1,7 +1,6 @@
 
 
-//This app is fully scalable. If you add another question (or indeed many) to the data the app will render it correctly.
-
+//This data was a placeholder while I worked on the main logic of the game. Once I ws happy I started fetching the data dynamically
 export default  [
     
 {

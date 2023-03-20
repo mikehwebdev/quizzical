@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from './Button'
 import Question from './Question'
 import Summary from './Summary'
@@ -6,61 +6,110 @@ import yellowBlob from '../src/img/yellowblob.png'
 import purpleBlob from '../src/img/purpleblob.png'
 import questionsYellowBlob from '../src/img/questionsyellowblob.png'
 import questionsPurpleBlob from '../src/img/questionspurpleblob.png'
-import data from '../data'
+import he from 'he'
 import './App.css'
 
-function App() {
+export default function App() {
   
 //All state we need for our Quizzical game.
+
   //gameStarted is set to false as our user starts the game themselves
   const [gameStarted, setGameStarted] = useState(false)
   //Game is not yet finished and we use this variable in conditionals when we're ready to calculate scores and display the 'Play again' button
   const [gameFinished, setGameFinished] = useState(false)
   //Our master data with a questions array with a sub answer array per question, a correct answer value to check scores when the game is finished and an identifier. The  answer array has a toggled value per answer entry.
-  const [questionsArray,setQuestionsArray] = useState(data)
+  const [questionsArray,setQuestionsArray] = useState([])
   //The score starts at 0 and is only calculated/changed in the game's final state.
   const [score, setScore] = useState(0)
+  //While not displayed, gamesCompleted is tracked in useEffect below to ensure data is only fetched via the Open Trivia Database on the initial render, then if a new game is started
+  const [gamesCompleted, setGamesCompleted] = useState(0)
   
 //Starts the game!
 function startGame(){
     setGameStarted(prev => !prev)
 }
 
-function buttonToggle(id, index) {
-//We map over the main questions array here
-    setQuestionsArray(prev => prev.map(question => {
-//If the index of the question matches the id that's already inherited (when rendering the button out) we know that's the correct question in the array.
-            if (index === question.id) {
+useEffect(() => {
+  //The below URL is generated at https://opentdb.com/api_config.php
+  fetch('https://opentdb.com/api.php?amount=5')
+      .then(res => res.json())
+      .then(data => {
+          //After fetching the data I map I set the questionsArray with the incoming data which I map over passing in each question element and its index
+          setQuestionsArray(data.results.map((question, index) => {
+              //questions can be a True/False or multiple choice and can be identified by the "Type" value
+              if (question.type === 'boolean') {
+                  return {
+                      //For "boolean" type questions we simply return an object that has the id, question, True and False buttons and the correctAnswer value . The checkAnswers function will work for both types of question.
+                      question: question.question,
+                      answers: [{
+                          answer: "True",
+                          isToggled: false
+                      }, {
+                          answer: "False",
+                          isToggled: false
+                      }],
+                      correctAnswer: question.correct_answer,
+                      id: index
+                  }
+              } else {
+                  //For "multiple" type questions the correct answer and incorrect answers are seperate in the data so I need to insert the correct answer into the incorrect answers. First I need to generate a number between 0 and 3
+                  let randomIndex = Math.floor(Math.random() * 4)
+                  //The I can splice the the correct answer into the random location while ensuring not to replace any entry
+                  question.incorrect_answers.splice(randomIndex, 0, question.correct_answer)
+                  return {
+                      question: question.question,
+                      //Now we can map over the adjusted answers array and return 4 answers for our buttons - only one of which will match the correct answer
+                      answers: question.incorrect_answers.map(answer => {
+                          return {
+                              answer: answer,
+                              isToggled: false
+                          }
+                      }),
+                      correctAnswer: question.correct_answer,
+                      id: index
+                  }
+              }
 
-                return {
+          }))
+      })
+  //At the end of this process we now have a questionsArray with all data we need for our game and our Questions and Answers can be rendered.
+}, [gamesCompleted])
+
+function buttonToggle(id, index) {
+  //We map over questionsArray here
+  setQuestionsArray(prev => prev.map(question => {
+          //If the index of the question matches the id that's already inherited (when rendering the button out) we know that's the correct question in the array.
+          if (index === question.id) {
+
+              return {
                   //We return the question unchanged
-                    ...question,
-                    //but we map over the answer array that's embedded in our data to the question using the index that's passed by the button click/toggle 
-                    answers: questionsArray[index].answers.map(answer => {
+                  ...question,
+                  //but we map over the answer array that's embedded in our data to the question using the index that's passed by the button click/toggle 
+                  answers: questionsArray[index].answers.map(answer => {
                       //if the answer held in the answers sub-array on this loop matches the id passed(which is essentially the answer in string form)
-                        if (answer.answer === id){
+                      if (answer.answer === id) {
                           //we return the answer but toggled true
                           return {
-                            ...answer,
-                            isToggled: true,
-                        }
-                        } else {
+                              ...answer,
+                              isToggled: true,
+                          }
+                      } else {
                           //otherwise we return the answer as toggled false so that when we click on an answer the other buttons are all unchecked for a logical user experience  
-                            return {
-                                ...answer,
-                                isToggled: false,
-                            }
-                        }
-                    })
-                }
-            } else {
+                          return {
+                              ...answer,
+                              isToggled: false,
+                          }
+                      }
+                  })
+              }
+          } else {
               //If the question being returned by the original map isn't the one we clicked on the question is returned unchanged
-                return question
-            }
-        })
+              return question
+          }
+      })
 
-    )
-    
+  )
+
 }
 
 //The bulk of the visual info in the app. We map over the main questions array -
@@ -78,14 +127,15 @@ const questionsElements = questionsArray.map((question) => {
           return (
             //We now map out each button
           <Button 
-          //id is a string of the actual answer for using in conditionals
+          //id is a string of the actual answer for comparison purposes in conditionals
               id={answer.answer}
               //Index is passed to our buttonToggle function above
               index={question.id}
               //Unique key prop
               key={answer.answer}
               //the text for display in the button itself
-              text={answer.answer}
+              //Here we use he.decode to translate encoded HTML and ensure the answer data is displayed correctly
+              text={he.decode(answer.answer)}
               //handlClick fires off our buttonToggle function
               handleClick={buttonToggle}
               //Toggled status is used by the conditional in our classCalculator function to display the buttons status correctly to the user both during game and when the final answer check is fired off.
@@ -113,12 +163,13 @@ function checkAnswers() {
     }
 }
 
-//This function resets all values back to the game's original state when the user clicks 'Play again'. 
+//This function resets all values back to the game's original state when the user clicks 'Play again' and sets the gamesCompleted to +1 to trigger our useEffect and fetch questions for the next round.
 function restartGame(){
     setGameFinished(false)
     setGameStarted(false)
     setScore(0)
-    setQuestionsArray(data)
+    setQuestionsArray([])
+    setGamesCompleted(prev => prev +1)
 }
 
   return (
@@ -153,4 +204,4 @@ function restartGame(){
   )
 }
 
-export default App
+
